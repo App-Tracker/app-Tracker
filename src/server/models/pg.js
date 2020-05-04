@@ -1,3 +1,5 @@
+// User info stored in table users
+
 const { Pool } = require('pg');
 
 const myURI =
