@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+mongoose.connect(`${process.env.MONGO_URI}`);
+
 const Schema = mongoose.Schema;
 
 const eventsSchema = new Schema({
@@ -9,6 +11,8 @@ const eventsSchema = new Schema({
     date: String,
   },
 });
+
+const events = mongoose.model('events', eventsSchema);
 
 const leadsSchema = new Schema({
   leads: {
@@ -22,7 +26,13 @@ const leadsSchema = new Schema({
   },
 });
 
+const leads = mongoose.model('leads', leadsSchema);
+
 const userSchema = new Schema({
   username: String,
   leads: [leadsSchema],
 });
+
+const user = mongoose.model('user', userSchema);
+
+export { user, leads, events };
