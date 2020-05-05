@@ -12,8 +12,7 @@ const dataReducer = (state = intialState, action) => {
       return {
         ...state,
         loading: true,
-        error: '',
-      }
+      };
     case types.FETCH_DATA_SUCCESS:
       return {
         ...state,
