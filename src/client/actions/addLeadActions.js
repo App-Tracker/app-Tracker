@@ -1,15 +1,17 @@
-/**
- * Async request to add to new calendar
- */
 
 import axios from 'axios';
 import * as types from '../constants/actionTypes';
 
-export const addLeadRequest = () => ({
+/**
+ * Async request to add a new lead
+ */
+
+export const addLeadRequest = (data) => ({
   type: types.ADD_LEAD_REQUEST,
+  payload: data,
 });
 
-export const addLeadSuccess = (data) => {
+export const addLeadSuccess = () => {
   return ({
     type: types.ADD_LEAD_SUCCESS,
   });
@@ -20,16 +22,30 @@ export const addLeadFailure = (error) => ({
   payload: error,
 });
 
-export const addLead = () => {
-  return (dispatch, getState) => {
-    const leadData = getState().addLead.data;
-    dispatch(addLeadRequest());
-    axios.post('/addlead', leadData)
-      .then(response => {
-        const data = response.data;
-        dispatch(addLeadSuccess(data));
+export const addLeadToStore = (newLead) => ({
+  type: types.ADD_LEAD,
+  payload: newLead,
+});
+
+/**
+ * Form Data is from AppLead component
+ * Expects response.data.id
+ */
+export const addLead = (data) => {
+  // Expects data.id
+  return (dispatch) => {
+    dispatch(addLeadRequest(data));
+    axios.post('/postlead', data)
+      .then((response) => {
+        const { id } = response.data;
+        const newLead = {
+          id,
+          ...data,
+        };
+        dispatch(addLeadSuccess());
+        dispatch(addLeadToStore(newLead));
       })
-      .catch(error => {
+      .catch((error) => {
         dispatch(addLeadFailure(error.message));
       });
   };

@@ -1,38 +1,58 @@
 /* eslint-disable no-useless-constructor */
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useStore } from 'react-redux';
 // import { Switch } from 'react-router-dom';
 import { fetchData } from '../actions/dataActions';
 import LogIn from './LogIn';
 import Table from './Table';
 import AddLead from './AddLead';
+import AddEvent from './AddEvent';
 
+const App = () => {
+  const dispatch = useDispatch();
+  useEffect(() => dispatch(fetchData()), []);
+  return (
+    <div id="app">
+      <LogIn/>
+      <AddLead/>
+      <Table/>
+      <AddEvent/>
+    </div>
+  );
+};
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-  }
-  componentDidMount() {
-    this.props.fetchData();
-    console.log(this.props.data);
-  }
-  render() {
-    return (
-      <div id="app">
-        <LogIn/>
-        <AddLead/>
-        <Table/>
-      </div>
-    );
-  }
-}
+export default App;
 
-const mapStateToProps = (state) => ({
-  data: state.data,
+/**
+ * 
+const mongoose = require('mongoose');
+
+const Schema = mongoose.Schema;
+
+const eventsSchema = new Schema({
+  events: {
+    notes: String,
+    event_type: String,
+    date: String,
+    reminder_in: Integer,
+    followup_after: Integer
+  },
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  fetchData: () => dispatch(fetchData()),
+const leadsSchema = new Schema({
+  leads: {
+    id: Number,
+    company: String,
+    link: String,
+    position: String,
+    cv: String,
+    cl: String,
+    events: [eventsSchema],
+  },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+const userSchema = new Schema({
+  username: String,
+  leads: [leadsSchema], // array of leads
+});
+ */
