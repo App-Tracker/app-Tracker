@@ -14,7 +14,7 @@ body {
 
 #app {
   display: grid;
-  grid-template-columns: minmax(200px, 15%) auto;
+  grid-template-columns: minmax(200px, 20%) auto;
   grid-template-rows: 50px auto;
   grid-template-areas: 
     "login header"

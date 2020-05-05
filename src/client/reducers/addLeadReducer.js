@@ -18,7 +18,12 @@ const initialState = {
 };
 
 const addLeadReducer = (state = initialState, action) => {
-  switch (action.type){
+  switch (action.type) {
+    case types.UPDATE_ADD_LEAD:
+      return {
+        ...state,
+        data: action.payload,
+      };
     case types.ADD_LEAD_REQUEST:
       return {
         ...state,

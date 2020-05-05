@@ -1,9 +1,19 @@
-/**
- * Async request to add to new calendar
- */
 
 import axios from 'axios';
 import * as types from '../constants/actionTypes';
+
+/**
+ * Handle changes to the form
+ */
+export const updateAddLead = (data) => ({
+  type: types.UPDATE_ADD_LEAD,
+  payload: data,
+});
+
+
+/**
+ * Async request to add to the table
+ */
 
 export const addLeadRequest = () => ({
   type: types.ADD_LEAD_REQUEST,
@@ -34,3 +44,4 @@ export const addLead = () => {
       });
   };
 };
+
