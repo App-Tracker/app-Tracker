@@ -9,6 +9,7 @@ const eventsSchema = new Schema({
     notes: String,
     event_type: String,
     date: String,
+    reminder_in: Number,
   },
 });
 
@@ -18,10 +19,12 @@ const leadsSchema = new Schema({
   leads: {
     id: Number,
     company: String,
+    recruiter: String,
     link: String,
     position: String,
     cv: String,
     cl: String,
+    notes: String,
     events: [eventsSchema],
   },
 });
