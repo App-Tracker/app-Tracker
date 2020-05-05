@@ -1,22 +1,38 @@
-import React, { useState } from 'react';
-import { Switch } from 'react-router-dom';
+/* eslint-disable no-useless-constructor */
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+// import { Switch } from 'react-router-dom';
+import { fetchData } from '../actions/dataActions';
+import LogIn from './LogIn';
+import Table from './Table';
+import AddLead from './AddLead';
 
-function App() {
-  const [count, setCount] = useState(0);
 
-  return (
-    <div className="app">
-      <Switch>
-        <div>
-          This is a silly React Hooks demo with a Counter:
-          {count}
-          <br />
-          <br />
-          <button type="button" onClick={() => setCount(count + 1)}> Click Me </button>
-        </div>
-      </Switch>
-    </div>
-  );
+class App extends Component {
+  constructor(props) {
+    super(props);
+  }
+  componentDidMount() {
+    this.props.fetchData();
+    console.log(this.props.data);
+  }
+  render() {
+    return (
+      <div id="app">
+        <LogIn/>
+        <AddLead/>
+        <Table/>
+      </div>
+    );
+  }
 }
 
-export default App;
+const mapStateToProps = (state) => ({
+  data: state.data,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  fetchData: () => dispatch(fetchData()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
