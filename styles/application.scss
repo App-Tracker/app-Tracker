@@ -15,10 +15,11 @@ body {
 #app {
   display: grid;
   grid-template-columns: minmax(200px, 20%) auto;
-  grid-template-rows: 50px auto;
+  grid-template-rows: 50px auto auto;
   grid-template-areas: 
     "login header"
-    "addlead table";
+    "addlead table"
+    "addevent addevent";
 }
 
 #login {
@@ -31,5 +32,9 @@ body {
 
 #addlead {
   grid-area: addlead;
+}
+
+#addevent {
+  grid-area: addevent;
 }
 

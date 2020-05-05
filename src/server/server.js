@@ -6,7 +6,7 @@ const cookieParser = require('cookie-parser');
 const passport = require('passport');
 const cookieSession = require('cookie-session');
 require('./passportOauth/passport-setup');
-const authController = require('./middleware/authControllers')
+const authController = require('./middleware/authControllers');
 
 const app = express();
 const PORT = 3000;
@@ -83,7 +83,7 @@ app.get(
 app.get('/logout', (req, res) => {
   req.session = null;
   req.logout();
-  res.redirect('/')
+  res.redirect('/');
 })
 
 // global error handler:

@@ -1,37 +1,35 @@
 /**
- * Manipulates store.addLead
+ * Manipulates store.addEvent
  */
 import * as types from '../constants/actionTypes';
 
 const initialState = {
   data: {
-    company: null,
-    link: null,
-    position: null,
-    cv: null,
-    cl: null,
-    recruiter: null,
+    event_type: null,
+    date: null,
     notes: null,
+    reminder_before: null,
+    followup_after: null,
   },
   loading: false,
   error: '',
 };
 
-const addLeadReducer = (state = initialState, action) => {
+const addEventReducer = (state = initialState, action) => {
   switch (action.type) {
-    case types.ADD_LEAD_REQUEST:
+    case types.ADD_EVENT_REQUEST:
       return {
         ...state,
         data: action.payload,
         loading: true,
       };
-    case types.ADD_LEAD_SUCCESS:
+    case types.ADD_EVENT_SUCCESS:
       return {
         data: { ...initialState },
         loading: false,
         error: '',
       };
-    case types.ADD_LEAD_FAILURE:
+    case types.ADD_EVENT_FAILURE:
       return {
         ...state,
         loading: false,
@@ -42,4 +40,4 @@ const addLeadReducer = (state = initialState, action) => {
   }
 };
 
-export default addLeadReducer;
+export default addEventReducer;
