@@ -1,6 +1,17 @@
 const mongoose = require('mongoose');
 
-mongoose.connect(`${process.env.MONGO_URI}`);
+mongoose.connect(
+  // `${process.env.MONGO_URI}`,
+  'mongodb+srv://mariodandrea:9QH3c9Jn3u2fotjy@cluster0-5k0f4.mongodb.net/test?retryWrites=true&w=majority',
+  { useNewUrlParser: true },
+  (error) => {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('successful connection');
+    }
+  }
+);
 
 const Schema = mongoose.Schema;
 
@@ -38,4 +49,4 @@ const userSchema = new Schema({
 
 const user = mongoose.model('user', userSchema);
 
-export { user, leads, events };
+module.exports = { user, leads, events };

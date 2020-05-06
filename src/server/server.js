@@ -6,13 +6,13 @@ const cookieParser = require('cookie-parser');
 const passport = require('passport');
 const cookieSession = require('cookie-session');
 require('./passportOauth/passport-setup');
-const authController = require('./middleware/authControllers')
+const authController = require('./middleware/authControllers');
+const mongoController = require('./middleware/mongoController');
 
 const app = express();
 const PORT = 3000;
 
-
-app.use(cors())
+app.use(cors());
 app.use(cookieParser());
 app.use(bodyParser.json());
 
@@ -83,12 +83,24 @@ app.get(
 app.get('/logout', (req, res) => {
   req.session = null;
   req.logout();
-  res.redirect('/')
-})
+  res.redirect('/');
+});
+
+// ON post id of lead
+// On event id
+// All lead data
+
+app.get('/test', (req, res) => {
+  res.status(200).send('test');
+});
+
+app.post('/addUser', mongoController.addUser, (req, res) => {
+  res.status(200).send('User added');
+});
 
 // global error handler:
 // eslint-disable-next-line no-unused-vars
-app.use((err, req, res, next) => {
+app.get((err, req, res, next) => {
   const defaultErr = {
     log: 'Express error handler caught unknown middleware error',
     status: 400,
