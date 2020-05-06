@@ -1,20 +1,22 @@
-
-import React from "react";
+import React from 'react';
 import { useForm } from 'react-hook-form';
-import { connect } from 'react-redux';
+import { connect, useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { Link, Route, Redirect } from 'react-router-dom';
+
 
 const LogIn = () => {
-  const {
-    handleSubmit,
-    errors,
-  } = useForm();
+  const { handleSubmit, errors } = useForm();
 
   return (
-    <div id='login'>
-        Login
+    <div id="login">
+      Login
+      <Switch>
+        <Route exact path="/signin" component={signin} />
+        <Route exact path="/mainDisplay" component={MainDisplay} />
+      </Switch>
     </div>
-  )
-}
+  );
+};
 
 const mapStateToProps = (state) => ({});
 

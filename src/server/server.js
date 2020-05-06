@@ -11,8 +11,7 @@ const authController = require('./middleware/authControllers');
 const app = express();
 const PORT = 3000;
 
-
-app.use(cors())
+app.use(cors());
 app.use(cookieParser());
 app.use(bodyParser.json());
 
@@ -52,7 +51,10 @@ app.get('/', (req, res) => {
 });
 
 app.get('/failed', (req, res) => `You failed to log in!`);
-app.get('/success', authController.isLoggedIn, (req, res) => res.send(`Welcome ${req.user.displayName}!`));
+app.get('/success', authController.isLoggedIn, (req, res) =>
+  res.redirect('/mainDisplay')
+);
+// res.send(`Welcome ${req.user.displayName}!`));
 // app.get('/success', (req, res) => res.send('Login success!'));
 
 // GET /auth/google
@@ -73,7 +75,7 @@ app.get(
 //   login page.  Otherwise, the primary route function function will be called,
 //   which, in this example, will redirect the user to the home page.
 app.get(
-  '/google/callback',
+  '/mainDisplay',
   passport.authenticate('google', { failureRedirect: '/failed' }),
   (req, res) => {
     res.redirect('/success');
@@ -84,7 +86,7 @@ app.get('/logout', (req, res) => {
   req.session = null;
   req.logout();
   res.redirect('/');
-})
+});
 
 // global error handler:
 // eslint-disable-next-line no-unused-vars
@@ -98,6 +100,8 @@ app.use((err, req, res, next) => {
   return res.status(errorObj.status).json(errorObj.message);
 });
 
-app.listen(PORT);
+app.listen(PORT, () => {
+  console.log(`Currently running on PORT ${PORT}`);
+});
 
 module.exports = app;
