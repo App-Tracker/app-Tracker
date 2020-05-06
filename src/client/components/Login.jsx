@@ -3,7 +3,6 @@ import { useForm } from 'react-hook-form';
 import { connect, useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { Link, Route, Redirect } from 'react-router-dom';
 
-
 const LogIn = () => {
   const { handleSubmit, errors } = useForm();
 
