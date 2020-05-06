@@ -1,9 +1,8 @@
 import * as types from '../constants/actionTypes';
-import Login from '../components/Login';
 
 export const updateLogin = (login) => ({
   type: types.UPDATE_LOGIN,
-  payload: Login,
+  payload: login,
 });
 
 export const updateUsername = (username) => ({
