@@ -20,6 +20,7 @@ const dataReducer = (state = intialState, action) => {
     case types.FETCH_DATA_SUCCESS:
       return {
         ...state,
+        leads: [...action.payload],
         loading: false,
       };
     case types.FETCH_DATA_FAILURE:
