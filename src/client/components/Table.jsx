@@ -71,7 +71,7 @@ const Table = ({ columns, data }) => {
   
   const history = useHistory();
   const handleAddEventClick = (id) => {
-    history.push(`/addEvent/${id}`);
+    history.push(`/?authenticated=true/addEvent/${id}`);
   }
 
   const {
