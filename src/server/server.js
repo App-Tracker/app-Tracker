@@ -6,19 +6,9 @@ const cookieParser = require('cookie-parser');
 const passport = require('passport');
 const cookieSession = require('cookie-session');
 require('./passportOauth/passport-setup');
-const authController = require('./middleware/authControllers');
 
 const app = express();
 const PORT = 3000;
-
-
-app.use(cors())
-app.use(cookieParser());
-app.use(bodyParser.json());
-
-// Handle parsing request body
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 
 /* Webpack/ Webpack Compiler */
 
@@ -36,6 +26,17 @@ app.use(
 );
 app.use(require('webpack-hot-middleware')(compiler));
 
+const authController = require('./middleware/authControllers');
+const request = require('request');
+
+app.use(cors());
+app.use(cookieParser());
+app.use(bodyParser.json());
+
+// Handle parsing request body
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
 app.use(
   cookieSession({
     name: 'App Tracker',
@@ -52,8 +53,31 @@ app.get('/', (req, res) => {
 });
 
 app.get('/failed', (req, res) => `You failed to log in!`);
-app.get('/success', authController.isLoggedIn, (req, res) => res.send(`Welcome ${req.user.displayName}!`));
-// app.get('/success', (req, res) => res.send('Login success!'));
+// app.get('/success', authController.isLoggedIn, (req, res) =>
+//   res.redirect('/mainDisplay')
+//);
+// res.send(`Welcome ${req.user.displayName}!`));
+app.get('/success', (req, res) => res.send('Login success!'));
+
+// app.get(
+//   '/google',
+//   (req, res, next) => {
+//     request(
+//       { url: 'https://accounts.google.com/o/oauth2/v2/auth' },
+//       (error, response, body) => {
+//         if (error || response.statusCode !== 200) {
+//           return next(error);
+//         }
+
+//         res.json(JSON.parse(body));
+//         return next();
+//       }
+//     );
+//   },
+//   passport.authenticate('google', {
+//     scope: ['profile', 'email'],
+//   })
+// );
 
 // GET /auth/google
 //   Use passport.authenticate() as route middleware to authenticate the
@@ -63,7 +87,8 @@ app.get('/success', authController.isLoggedIn, (req, res) => res.send(`Welcome $
 app.get(
   '/google',
   passport.authenticate('google', {
-    scope: ['profile', 'email'],
+    scope: [
+      'email', 'profile'],
   })
 );
 
@@ -76,7 +101,7 @@ app.get(
   '/google/callback',
   passport.authenticate('google', { failureRedirect: '/failed' }),
   (req, res) => {
-    res.redirect('/success');
+    res.redirect('/');
   }
 );
 
@@ -84,7 +109,7 @@ app.get('/logout', (req, res) => {
   req.session = null;
   req.logout();
   res.redirect('/');
-})
+});
 
 // global error handler:
 // eslint-disable-next-line no-unused-vars
@@ -98,6 +123,8 @@ app.use((err, req, res, next) => {
   return res.status(errorObj.status).json(errorObj.message);
 });
 
-app.listen(PORT);
+app.listen(PORT, () => {
+  console.log(`Currently running on PORT ${PORT}`);
+});
 
 module.exports = app;

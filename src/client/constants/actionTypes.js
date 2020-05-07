@@ -23,7 +23,9 @@ export const ADD_EVENT = 'ADD_EVENT';
 export const DELETE_EVENT = 'DELETE_EVENT';
 export const UPDATE_EVENT = 'UPDATE_EVENT';
 
-
+export const UPDATE_LOGIN = 'UPDATE_LOGIN';
+export const UPDATE_USERNAME = 'UPDATE_USERNAME';
+export const UPDATE_PASSWORD = 'UPDATE_PASSWORD';
 
 /**
  * update_rule

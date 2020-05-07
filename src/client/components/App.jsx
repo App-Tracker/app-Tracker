@@ -1,22 +1,20 @@
 /* eslint-disable no-useless-constructor */
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useStore } from 'react-redux';
-// import { Switch } from 'react-router-dom';
+import { Route, Switch, Link } from 'react-router-dom';
 import { fetchData } from '../actions/dataActions';
-import LogIn from './LogIn';
-import Table from './Table';
-import AddLead from './AddLead';
-import AddEvent from './AddEvent';
+import Login from './Login';
+import SwitchBase from '@material-ui/core/internal/SwitchBase';
+import MainDisplay from './MainDisplay';
 
 const App = () => {
   const dispatch = useDispatch();
   useEffect(() => dispatch(fetchData()), []);
   return (
     <div id="app">
-      <LogIn/>
-      <AddLead/>
-      <Table/>
-      <AddEvent/>
+      <Switch>
+        <Route exact path="/" component={Login} />
+      </Switch>
     </div>
   );
 };
