@@ -12,5 +12,29 @@ body {
   color: $primary-color;
 }
 
+#app {
+  display: grid;
+  grid-template-columns: minmax(200px, 20%) auto;
+  grid-template-rows: 50px auto auto;
+  grid-template-areas: 
+    "login header"
+    "addlead table"
+    "addevent addevent";
+}
 
- 
+#login {
+  grid-area: login;
+}
+
+#table {
+  grid-area: table;
+}
+
+#addlead {
+  grid-area: addlead;
+}
+
+#addevent {
+  grid-area: addevent;
+}
+

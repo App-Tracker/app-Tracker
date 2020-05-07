@@ -6,9 +6,9 @@ mongoController.addUser = (req, res, next) => {
   const { username } = res.locals;
   // return res.send(res.locals);
   // res.send({ username });
-  if (!username) {
-    return next('No user name entered');
-  }
+  // if (!res.locals.username) {
+  //   return next('No user name entered');
+  // }
 
   user.findOne({ username }, (err, results) => {
     if (err) {

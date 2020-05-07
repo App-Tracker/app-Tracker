@@ -22,19 +22,19 @@ app.use(express.json());
 
 /* Webpack/ Webpack Compiler */
 
-const webpack = require('webpack');
-const webpackConfig = require('../../webpack.config.js');
+// const webpack = require('webpack');
+// const webpackConfig = require('../../webpack.config.js');
 
-const compiler = webpack(webpackConfig);
+// const compiler = webpack(webpackConfig);
 
-app.use(
-  require('webpack-dev-middleware')(compiler, {
-    noInfo: true,
-    publicPath: webpackConfig.output.publicPath,
-    stats: { colors: true },
-  })
-);
-app.use(require('webpack-hot-middleware')(compiler));
+// app.use(
+//   require('webpack-dev-middleware')(compiler, {
+//     noInfo: true,
+//     publicPath: webpackConfig.output.publicPath,
+//     stats: { colors: true },
+//   })
+// );
+// app.use(require('webpack-hot-middleware')(compiler));
 
 app.use(
   cookieSession({
@@ -52,8 +52,10 @@ app.get('/', (req, res) => {
 });
 
 app.get('/failed', (req, res) => `You failed to log in!`);
-// app.get('/success', authController.isLoggedIn, (req, res) => (`Welcome ${req.user.email}!`));
-app.get('/success', (req, res) => res.send('Login success!'));
+app.get('/success', authController.isLoggedIn, (req, res) =>
+  res.send(`Welcome ${req.user.displayName}!`)
+);
+// app.get('/success', (req, res) => res.send('Login success!'));
 
 // GET /auth/google
 //   Use passport.authenticate() as route middleware to authenticate the
