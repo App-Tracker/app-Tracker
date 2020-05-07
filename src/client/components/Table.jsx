@@ -1,151 +1,138 @@
+/* eslint-disable react/jsx-props-no-spreading */
+
 /**
  * Table displaying all leads.
  */
-import React, { Component } from 'react';
-import styled from 'styled-components';
-import { connect } from 'react-redux';
+import React, { useEffect, useState, useMemo } from 'react';
+import { useDispatch, useStore, useSelector } from 'react-redux';
+import { v4 as uuidv4 } from 'uuid';
+import { useHistory } from 'react-router-dom';
+
 import {
   useTable,
   useGroupBy,
   useFilters,
   useSortBy,
   useExpanded,
-  usePagination,
+  visibleColumns,
+  state,
+  useGlobalFilter,
+  preGlobalFilteredRows,
+  setGlobalFilter,
 } from 'react-table';
 
-class Table extends Component {
-  constructor(props) {
-    super(props);
+/**
+ * AppTable feeds props to Table.
+ */
+
+const Table = ({ columns, data }) => {
+  /**
+   * UI for column filter.
+   */
+  const DefaultColumnFilter = ({ column: { filterValue, setFilter } }) => {
+    return (
+      <input
+        value={filterValue || ""}
+        onChange={(e) => {
+          setFilter(e.target.value || undefined); // Set undefined to remove the filter entirely
+        }}
+        placeholder={`Search`}
+      />
+    );
+  };
+
+  /**
+   * Sets default definitions for columns, to enable DefaultColumnFilter to all columns.
+   */
+  const defaultColumn = useMemo(
+    () => ({
+      // Let's set up our default Filter UI
+      Filter: DefaultColumnFilter,
+    }),
+    [],
+  );
+
+  /**
+   * Set filterTypes to be passed into useTable. Currently we only have text filter.
+   */
+  const filterTypes = useMemo(
+    () => ({
+      text: (rows, id, filterValue) => {
+        return rows.filter((row) => {
+          const rowValue = row.values[id];
+          return rowValue !== undefined
+            ? String(rowValue).toLowerCase().startsWith(String(filterValue).toLowerCase())
+            : true;
+        });
+      },
+    }),
+    [],
+  );
+  
+  const history = useHistory();
+  const handleAddEventClick = (id) => {
+    history.push(`/?authenticated=true/addEvent/${id}`);
   }
-  render() {
-    return <div id="table">Table</div>;
-  }
-}
 
-// const Styles = styled.div`
-//   padding: 1rem;
+  const {
+    getTableBodyProps,
+    getTableProps,
+    headerGroups,
+    rows,
+    prepareRow,
+  } = useTable(
+    {
+      columns,
+      data,
+      defaultColumn,
+      filterTypes,
+    },
+    useFilters,
+    useSortBy,
+  );
 
-//   table {
-//     border-spacing: 0;
-//     border: 1px solid black;
+  return (
+    <table {...getTableProps()} id="table">
+      <thead>
+        {headerGroups.map((headerGroup) => (
+          <tr {...headerGroup.getHeaderGroupProps()}>
+            {headerGroup.headers.map((column) => (
+              <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                {column.render("Header")}
+                <span>
+                  {column.isSorted ? (column.isSortedDesc ? "▽" : "△") : ""}
+                </span>
+                <div>{column.canFilter ? column.render("Filter") : null}</div>
+              </th>
+            ))}
+          </tr>
+        ))}
+      </thead>
+      <tbody {...getTableBodyProps()}>
+        {rows.map((row, i) => {
+          prepareRow(row); // adds getRowProps to row.
+          return (
+            <tr {...row.getRowProps()}>
+              {/* renders each cell within the row*/}
+              {row.cells.map((cell) => {
+                if (cell.column.id === "events") {
+                  return (
+                    <td {...cell.getCellProps()}>
+                      <ul>
+                        {cell.row.original.events.map((e) => <li key={uuidv4()}>{e.event_type} ({e.date})</li>)}
+                      </ul>
+                      <span><button onClick={() => handleAddEventClick(cell.row.original.id)}>Add Event to Lead {cell.row.original.id}</button></span>
+                    </td>
+                  );
+                }
+                return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
+              })}
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  );
+};
 
-//     tr {
-//       :last-child {
-//         td {
-//           border-bottom: 0;
-//         }
-//       }
-//     }
-
-//     th,
-//     td {
-//       margin: 0;
-//       padding: 0.5rem;
-//       border-bottom: 1px solid black;
-//       border-right: 1px solid black;
-
-//       :last-child {
-//         border-right: 0;
-//       }
-//     }
-//   }
-// `;
-
-// const Table = ({ columns, data }) => {
-//   // Use the state and functions returned from useTable to build your UI
-//   const {
-//     getTableBodyProps,
-//     getTableProps,
-//     headerGroups,
-//     rows,
-//     prepareRow,
-//   } = useTable({
-//     columns,
-//     data,
-//   });
-
-//   // Render the UI for your table
-//   return (
-//     <table {...getTableProps()}>
-//       <thead>
-//         {headerGroups.map((headerGroup) => (
-//           <tr {...headerGroup.getHeaderGroupProps()}>
-//             <th {...column.getHeaderProps()}>{column.render('Header')}</th>
-//           </tr>
-//         ))}
-//       </thead>
-//       <tbody {...getTableBodyProps()}>
-//         {rows.map((row, i) => {
-//           prepareRow(row);
-//           return (
-//             <tr {...row.getRowProps()}>
-//               {row.cells.map((cell) => {
-//                 return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
-//               })}
-//             </tr>
-//           );
-//         })}
-//       </tbody>
-//     </table>
-//   );
-// };
-
-// const AppTable = () => {
-//   const columns = React.useMemo(
-//     () => [
-//       {
-//         Header: 'Application',
-//         columns: [
-//           {
-//             Header: 'Company',
-//             accessor: 'company',
-//           },
-//           {
-//             Header: 'Position',
-//             accessor: 'position',
-//           },
-//           {
-//             Header: 'CV',
-//             accessor: 'cv',
-//           },
-//           {
-//             Header: 'CL',
-//             accessor: 'cl',
-//           },
-//           {
-//             Header: 'Link',
-//             accessor: 'link',
-//           },
-//           {
-//             Header: 'Recruiter',
-//             accessor: 'recruiter',
-//           },
-//           {
-//             Header: 'Events',
-//             accessor: 'events',
-//           },
-//           {
-//             Header: 'Reminder',
-//             accessor: 'reminder',
-//           },
-//         ],
-//       },
-//     ],
-//     []
-//   );
-
-//   const data = React.useMemo(() => makeData(20), []);
-
-//   return (
-//     <Styles>
-//       <Table columns={columns} data={data} />
-//     </Styles>
-//   );
-// };
-
-// export default Table;
-const mapStateToProps = (state) => ({});
-
-const mapDispatchToProps = (dispatch) => ({});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Table);
+export default Table;

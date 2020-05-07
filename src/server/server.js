@@ -10,7 +10,9 @@ require('./passportOauth/passport-setup');
 const app = express();
 const PORT = 3000;
 
-/* Webpack/ Webpack Compiler */
+/**
+ * Webpack & Webpack Compiler
+ */
 
 const webpack = require('webpack');
 const webpackConfig = require('../../webpack.config.js');
@@ -33,7 +35,9 @@ app.use(cors());
 app.use(cookieParser());
 app.use(bodyParser.json());
 
-// Handle parsing request body
+/**
+ * Handle parsing request body
+ */
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -47,43 +51,15 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-// serve index.html on the route '/'
+/**
+ * serve index.html on the route '/'
+ */
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../../index.html'));
 });
 
 app.get('/failed', (req, res) => `You failed to log in!`);
-// app.get('/success', authController.isLoggedIn, (req, res) =>
-//   res.redirect('/mainDisplay')
-//);
-// res.send(`Welcome ${req.user.displayName}!`));
-app.get('/success', (req, res) => res.send('Login success!'));
 
-// app.get(
-//   '/google',
-//   (req, res, next) => {
-//     request(
-//       { url: 'https://accounts.google.com/o/oauth2/v2/auth' },
-//       (error, response, body) => {
-//         if (error || response.statusCode !== 200) {
-//           return next(error);
-//         }
-
-//         res.json(JSON.parse(body));
-//         return next();
-//       }
-//     );
-//   },
-//   passport.authenticate('google', {
-//     scope: ['profile', 'email'],
-//   })
-// );
-
-// GET /auth/google
-//   Use passport.authenticate() as route middleware to authenticate the
-//   request.  The first step in Google authentication will involve
-//   redirecting the user to google.com.  After authorization, Google
-//   will redirect the user back to this application at google/callback
 app.get(
   '/google',
   passport.authenticate('google', {
@@ -92,16 +68,11 @@ app.get(
   })
 );
 
-// GET /auth/google/callback
-//   Use passport.authenticate() as route middleware to authenticate the
-//   request.  If authentication fails, the user will be redirected back to the
-//   login page.  Otherwise, the primary route function function will be called,
-//   which, in this example, will redirect the user to the home page.
 app.get(
   '/google/callback',
   passport.authenticate('google', { failureRedirect: '/failed' }),
   (req, res) => {
-    res.redirect('/');
+    res.redirect('/?authenticated=true');
   }
 );
 

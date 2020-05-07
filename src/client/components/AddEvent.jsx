@@ -3,64 +3,77 @@
  */
 
 import React from "react";
-import { useDispatch } from 'react-redux';
-import { useForm } from 'react-hook-form';
-import TextField from '@material-ui/core/TextField';
-import InputLabel from '@material-ui/core/InputLabel';
+import { useDispatch } from "react-redux";
+import { useForm } from "react-hook-form";
+import TextField from "@material-ui/core/TextField";
+import InputLabel from "@material-ui/core/InputLabel";
+import { v4 as uuidv4 } from 'uuid';
 import * as actions from '../actions/addEventActions';
-import NativeSelect from '@material-ui/core/NativeSelect';
+import { useHistory } from 'react-router-dom';
 
-const AddEvent = () => {
-  const {
-    register,
-    handleSubmit,
-    errors,
-  } = useForm();
+const AddEvent = ({ history, location, match }) => {
+  const leadId = 1; //match.params.id
+  const { register, handleSubmit, errors } = useForm();
   const dispatch = useDispatch();
-  const onSubmit = (data) => {
-    dispatch(actions.addEvent(data));
+  const onSubmit = (data, leadId) => {
+    dispatch(actions.addEvent(data, leadId));
   };
+
+  const reminderOptions = [];
+  reminderOptions.push(<option name="reminder_in" value="None">None</option>);
+  for (let i = 1; i < 11; i += 1) {
+    reminderOptions.push(<option name="reminder_in" value={i} key={uuidv4()}>{i}</option>);
+  }
+
+  const followupOptions = [];
+  followupOptions.push(<option name="followup_after" value="None">None</option>);
+  for (let i = 1; i < 11; i += 1) {
+    followupOptions.push(<option name="followup_after" value={i} key={uuidv4()}>{i}</option>);
+  }
+
   return (
     <div id="addevent">
-      <span className="title">New Event</span>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <NativeSelect
-          inputProps={{
-            name: 'event',
-            id: 'event-native-helper',
-          }}
-          inputRef={register({ required: true })}
-        >
-          <option aria-label="None" value="" />
-          <option value="Networking">Networking</option>
-          <option value="Networking">Screening</option>
-          <option value="TechnicalInterview">TechnicalInterview</option>
-          <option value="NonTechnicalInterview">NonTechnicalInterview</option>
-          <option value="TechnicalInterview">Onsight</option>
-          <option value="NonTechnicalInterview">NonTechnicalInterview</option>
-        </NativeSelect>
-        <InputLabel>Event Type</InputLabel>
-
+      <span className="title">Add Event to Lead {leadId}</span>
+      <form onSubmit={handleSubmit((data, leadId) => onSubmit(data, leadId))}>
+        <select name="event_type" ref={register({ required: true })}>
+          <option name="event_type" value="Networking">
+            Networking
+          </option>
+          <option name="event_type" value="RecruiterCall">
+            RecruiterCall
+          </option>
+          <option name="event_type" value="Screening">
+            Screening
+          </option>
+          <option name="event_type" value="TechInterview">
+            TechInterview
+          </option>
+          <option name="event_type" value="NonTechInterview">
+            NonTechInterview
+          </option>
+        </select>
+        <InputLabel id="demo-simple-select-label">Event Type</InputLabel>
+        <br />
         <TextField
           id="date"
           type="date"
+          name="date"
           InputLabelProps={{ shrink: true }}
           inputRef={register({ required: true })}
         />
         <InputLabel>Date</InputLabel>
-
-        <TextField name="reminder_in" inputRef={register({ pattern: /([1-9][0-9]*)/ })} />
+        <br />
+        <select name="reminder_in" ref={register({ required: true })}>
+          {reminderOptions}
+        </select>
         <InputLabel>Reminder Before X Days</InputLabel>
-
-        <TextField name="followup_after" inputRef={register({ pattern: /([1-9][0-9]*)/ })} />
+        <br />
+        <select name="followup_after" ref={register({ required: true })}>
+          {reminderOptions}
+        </select>
         <InputLabel>Followup After X Days</InputLabel>
-
-        <TextField
-          name="notes"
-          multiline
-          rows="5"
-          inputRef={register}
-        />
+        <br />
+        <TextField name="notes" multiline rows="3" inputRef={register} />
         <InputLabel>Notes</InputLabel>
         <input type="submit" />
       </form>

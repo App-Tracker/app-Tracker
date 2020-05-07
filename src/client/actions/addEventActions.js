@@ -6,9 +6,9 @@ import * as types from '../constants/actionTypes';
  * Async request to add a new event
  */
 
-export const addEventRequest = (data) => ({
+export const addEventRequest = (data, leadId) => ({
   type: types.ADD_EVENT_REQUEST,
-  payload: data,
+  payload: {...data, id: leadId },
 });
 
 export const addEventSuccess = () => {

@@ -4,18 +4,16 @@ import { connect } from 'react-redux';
 import { Route, Switch } from 'react-router-dom';
 import AddLead from './AddLead';
 import AddEvent from './AddEvent';
-import Table from './Table';
+import AppTable from './AppTable';
 
 const MainDisplay = () => {
   const dispatch = useDispatch();
   useEffect(() => dispatch(fetchData()), []);
   return (
     <div id="mainDisplay">
-      <Switch>
-        <Route exact path="/addLead" component={AddLead} />
-        <Route exact path="/addEvent" component={AddEvent} />
-      </Switch>
-      <Table />
+      <AddLead />
+      <AppTable />
+      <Route path="/addEvent/:id" component={AddEvent} />
     </div>
   );
 };
