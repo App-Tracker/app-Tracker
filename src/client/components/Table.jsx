@@ -92,7 +92,7 @@ const Table = ({ columns, data }) => {
   );
 
   return (
-    <table {...getTableProps()}>
+    <table {...getTableProps()} id="table">
       <thead>
         {headerGroups.map((headerGroup) => (
           <tr {...headerGroup.getHeaderGroupProps()}>

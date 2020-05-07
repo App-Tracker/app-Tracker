@@ -14,21 +14,19 @@ body {
 
 #app {
   display: grid;
-  grid-template-columns: 100px 600px 300px;
-  grid-template-areas: 
-    "login login header"
-    "addlead table addevent";
+  grid-template-columns: 100px auto 100px;
+  grid-template-rows: auto;
 }
 
-#login {
-  grid-area: login;
-}
+// #login {
+//   grid-area: login;
+// }
 
-#table {
-  grid-area: table;
-}
+// #table {
+//   grid-area: table;
+// }
 
-#addevent {
-  grid-area: addevent;
-}
+// #addevent {
+//   grid-area: addevent;
+// }
 

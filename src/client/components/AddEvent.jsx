@@ -12,7 +12,7 @@ import * as actions from '../actions/addEventActions';
 import { useHistory } from 'react-router-dom';
 
 const AddEvent = ({ history, location, match }) => {
-  const leadId = match.params.id;
+  const leadId = 1; //match.params.id
   const { register, handleSubmit, errors } = useForm();
   const dispatch = useDispatch();
   const onSubmit = (data, leadId) => {

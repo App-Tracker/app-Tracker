@@ -1,8 +1,7 @@
 /**
  * Container for table displayiong all leads.  Processes & passes data to the table.
  */
-import React, { useEffect, useState, useMemo } from 'react';
-import { useDispatch, useStore, useSelector } from 'react-redux';
+import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import Table from './Table';
 

@@ -8,7 +8,6 @@ import AppTable from './AppTable';
 
 const MainDisplay = () => {
   const dispatch = useDispatch();
-  console.log('say hi');
   useEffect(() => dispatch(fetchData()), []);
   return (
     <div id="mainDisplay">
