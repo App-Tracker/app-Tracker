@@ -10,6 +10,7 @@ const initialState = {
     notes: null,
     reminder_before: null,
     followup_after: null,
+    id: null,
   },
   loading: false,
   error: '',

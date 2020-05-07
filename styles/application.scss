@@ -14,12 +14,11 @@ body {
 
 #app {
   display: grid;
-  grid-template-columns: minmax(200px, 20%) auto;
+  grid-template-columns: minmax(100px, 20%) auto 30%;
   grid-template-rows: 50px auto auto;
   grid-template-areas: 
-    "login header"
-    "addlead table"
-    "addevent addevent";
+    "login header header"
+    "addlead table addevent";
 }
 
 #login {

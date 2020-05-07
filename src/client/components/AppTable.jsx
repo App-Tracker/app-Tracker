@@ -6,6 +6,9 @@ import { useDispatch, useStore, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import Table from './Table';
 
+/**
+ * Styles used for AppTable.
+ */
 const Styles = styled.div`
   padding: 1rem;
 
@@ -35,6 +38,9 @@ const Styles = styled.div`
   }
 `;
 
+/**
+ * AppTable calls the Table passing in columns and data.
+ */
 const AppTable = () => {
   const getRowProps = (gridState, rowProps) => (rowProps) || {};
   const columns = React.useMemo(
@@ -43,17 +49,10 @@ const AppTable = () => {
         Header: 'Leads',
         columns: [
           {
-            Header: '',
-            maxWidth: 90,
-            accessor: 'functions',
-            getProps: getRowProps,
-          },
-          {
-            Header: 'Id',
-            accessor: 'id',
-          },
-          {
-            Header: 'Company',
+            Header: (props) => {
+              console.log(props);
+              return 'Company';
+            },
             accessor: 'company',
           },
           {
@@ -81,6 +80,10 @@ const AppTable = () => {
             accessor: 'events',
           },
           {
+            Header: 'lastEventDate',
+            accessor: 'lastEventDate'
+          },
+          {
             Header: 'Reminder',
             accessor: 'reminder',
           }
@@ -89,9 +92,42 @@ const AppTable = () => {
     ],
     []
   );
+  /**
+   * Parses events arry and returns a reminder for the latest event to include in the "reminder" column.
+   * Reminder for a follow-up lasts for max 10 days after the event.
+   */
+  const reminderGenerator = (events) => {
+    // if lastEvent < today, 
+    const event = events[events.length-1];
+    const eventDate = new Date(event.date);
+    const today = Date.now()
+    if (eventDate >= today) {
+      if (event.reminder_in === "None") {
+        return;
+      }
+      const dateDiff = parseInt((eventDate - today)/(1000*60*60*24));
+      if (dateDiff <= event.reminder_in) {
+        return `${event.event_type} in ${dateDiff} days`;
+      }
+    }
+    if (eventDate < today) {
+      if (event.followup_after === "None") {
+        return;
+      }
+      const dateDiff = parseInt((today - eventDate) / (1000*60*60*24));
+      if (dateDiff >= event.followup_after && dateDiff < 10) {
+        return `Follow up for ${event.event_type} (${dateDiff} days passed)`
+      }
+    }
+    return;
+  };
 
-  /* To use once connected to DB */
-// const leads = useSelector(state => [...state.data.leads]);
+  /**
+   * Leads are from the store. Lead is initially fetched by GET request then updated incrementally upon successful POST or PUT requests.
+   * We process leads to generate data that will be displayed in Table.
+   * Each time lead is updated, data is also updated.
+   */
+  // const leads = useSelector(state => [...state.data.leads]);  <== to use once server endpoint available
   const leads = [
     {
       id: 1,
@@ -100,20 +136,22 @@ const AppTable = () => {
       position: 'backend',
       cv: 'v1',
       cl: 'v2',
-      // events: [
-      //   {
-      //     event_type: 'Screening',
-      //     date: '2015-05-01',
-      //     reminder_in: 3,
-      //     followup_after: 5
-      //   },
-      //   {
-      //     event_type: 'TechInterview',
-      //     date: '2015-05-14',
-      //     reminder_in: 3,
-      //     followup_after: 5
-      //   }
-      // ]
+      events: [
+        {
+          event_type: 'Screening',
+          date: '2020-05-01',
+          reminder_in: 3,
+          followup_after: 5,
+          notes: null,
+        },
+        {
+          event_type: 'TechInterview',
+          date: '2020-05-04',
+          reminder_in: 3,
+          followup_after: 2,
+          notes: null,
+        }
+      ]
     },
     {
       id: 2,
@@ -122,26 +160,49 @@ const AppTable = () => {
       position: 'backend',
       cv: 'v1',
       cl: 'v1',
-      // events: [
-      //   {
-      //     event_id: 0,
-      //     event_type: 'Screening',
-      //     date: '2015-06-01',
-      //     reminder_in: 3,
-      //     followup_after: 2
-      //   },
-      //   {
-      //     event_id: 1,
-      //     event_type: 'TechInterview',
-      //     date: '2015-06-14',
-      //     reminder_in: 3,
-      //     followup_after: 2
-      //   }
-      // ]
+      events: [
+        {
+          event_id: 0,
+          event_type: 'Screening',
+          date: '2020-05-01',
+          reminder_in: 3,
+          followup_after: 2
+        },
+        {
+          event_id: 1,
+          event_type: 'TechInterview',
+          date: '2015-05-14',
+          reminder_in: 3,
+          followup_after: 2
+        }
+      ]
+    },
+    {
+      id: 3,
+      company: 'Apple',
+      link: 'apple.com',
+      position: 'backend',
+      cv: 'v1',
+      cl: 'v2',
+      events: [
+        {
+          event_id: 0,
+          event_type: 'Screening',
+          date: '2020-05-02',
+          reminder_in: 3,
+          followup_after: 2
+        },
+        {
+          event_id: 1,
+          event_type: 'TechInterview',
+          date: '2015-05-14',
+          reminder_in: 3,
+          followup_after: 4
+        }
+      ]
     },
   ];
   const data = useMemo(() => leads.map((lead) => ({
-    functions: 'buttons',
     id: lead.id,
     company: lead.company,
     position: lead.position,
@@ -149,7 +210,8 @@ const AppTable = () => {
     cl: lead.cl,
     recruiter: lead.recruiter,
     events: lead.events,
-    reminder: lead.reminder,
+    lastEventDate: lead.events[lead.events.length - 1].date, // assumes last event will be sent in last last
+    reminder: reminderGenerator(lead.events),
   })), [leads]);
 
   return (
@@ -160,8 +222,3 @@ const AppTable = () => {
 };
 
 export default AppTable;
-// const mapStateToProps = (state) => ({});
-
-// const mapDispatchToProps = (dispatch) => ({});
-
-// export default connect(mapStateToProps, mapDispatchToProps)(Table);
