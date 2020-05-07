@@ -8,10 +8,9 @@ import {
   updatePassword,
 } from '../actions/loginActions';
 
-
 const Login = () => {
   const dispatch = useDispatch();
-  const { username, password, login } = useSelector((state) => {
+  const { username, password } = useSelector((state) => {
     return {
       username: state.username,
       password: state.password,
@@ -37,8 +36,10 @@ const Login = () => {
   };
 
   const oAuthRedirect = () => {
-    fetch('/google', {
+    console.log('oauth fetch working');
+    fetch('http://localhost:3000/google', {
       method: 'GET',
+      mode: 'no-cors',
     })
       .then((response) => {
         console.log(response);
@@ -69,9 +70,7 @@ const Login = () => {
         Log in
       </button>
       <div id="oAuth">
-        <button id="oAuthBtn" onClick={() => oAuthRedirect()} type="submit">
-          Log in with Google
-        </button>
+        <a href={`http://localhost:3000/google`}>Login With Google</a>
       </div>
     </div>
   );
@@ -87,7 +86,6 @@ export default Login;
 // const mapDispatchToProps = (dispatch) => ({});
 
 // export default connect(mapStateToProps, mapDispatchToProps)(LogIn);
-
 
 // <Switch>
 // <Route exact path="/signin" component={signin} />

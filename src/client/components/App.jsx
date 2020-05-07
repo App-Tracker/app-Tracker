@@ -12,22 +12,8 @@ const App = () => {
   useEffect(() => dispatch(fetchData()), []);
   return (
     <div id="app">
-      {/* <Link to="/mainDisplay"> test </Link> */}
       <Switch>
         <Route exact path="/" component={Login} />
-        <Route exact path="/mainDisplay" component={MainDisplay} />
-        
-        {/* <Route
-          exact
-          path="/"
-          component={() => {
-            if (loggedState === 'User') {
-              return <MainDisplay />;
-            } else {
-              return <Login />; */}
-            }
-          }}
-        />
       </Switch>
     </div>
   );
